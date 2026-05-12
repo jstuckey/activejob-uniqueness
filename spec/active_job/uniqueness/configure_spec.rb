@@ -75,4 +75,32 @@ describe ActiveJob::Uniqueness, '.configure' do
       expect { configure }.to raise_error(ActiveJob::Uniqueness::InvalidOnConflictAction, "Unexpected 'panic' action on conflict")
     end
   end
+
+  context 'when redlock_options has been set' do
+    subject(:configure) do
+      described_class.configure do |c|
+        c.redlock_options = { redis_timeout: 0.05 }
+      end
+    end
+
+    it 'merges with defaults' do
+      expect { configure }.to change(config, :redlock_options)
+        .from({ retry_count: 0 })
+        .to({ retry_count: 0, redis_timeout: 0.05 })
+    end
+  end
+
+  context 'when redlock_options has been set with retry_count' do
+    subject(:configure) do
+      described_class.configure do |c|
+        c.redlock_options = { retry_count: 1 }
+      end
+    end
+
+    it 'overwrites the defaults' do
+      expect { configure }.to change(config, :redlock_options)
+        .from({ retry_count: 0 })
+        .to({ retry_count: 1 })
+    end
+  end
 end

@@ -51,6 +51,9 @@ module ActiveJob
       end
 
       def redlock_options=(options)
+        options ||= {}
+        raise ArgumentError, "redlock_options must be a Hash-like object, got #{options.class}" unless options.respond_to?(:to_hash)
+
         config.redlock_options = REDLOCK_DEFAULTS.merge(options)
       end
     end

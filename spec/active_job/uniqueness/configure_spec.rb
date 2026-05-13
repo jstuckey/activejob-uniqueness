@@ -103,4 +103,28 @@ describe ActiveJob::Uniqueness, '.configure' do
         .to({ retry_count: 1 })
     end
   end
+
+  context 'when redlock_options has been set to nil' do
+    subject(:configure) do
+      described_class.configure do |c|
+        c.redlock_options = nil
+      end
+    end
+
+    it 'uses defaults' do
+      expect { configure }.to not_change(config, :redlock_options).from({ retry_count: 0 })
+    end
+  end
+
+  context 'when redlock_options has been set to non-hash-like value' do
+    subject(:configure) do
+      described_class.configure do |c|
+        c.redlock_options = 'invalid'
+      end
+    end
+
+    it 'raises ArgumentError' do
+      expect { configure }.to raise_error(ArgumentError)
+    end
+  end
 end

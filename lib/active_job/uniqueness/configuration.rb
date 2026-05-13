@@ -18,7 +18,7 @@ module ActiveJob
       config_accessor(:on_conflict) { :raise }
       config_accessor(:on_redis_connection_error) { :raise }
       config_accessor(:redlock_servers) { [ENV.fetch('REDIS_URL', 'redis://localhost:6379')] }
-      config_accessor(:redlock_options) { REDLOCK_DEFAULTS }
+      config_accessor(:redlock_options) { REDLOCK_DEFAULTS.dup }
       config_accessor(:lock_strategies) { {} }
 
       config_accessor(:digest_method) do
